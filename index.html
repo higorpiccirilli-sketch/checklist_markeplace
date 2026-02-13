@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Envios Diários - Marketplaces</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg-color: #f8fafc;
+            --text-color: #334155;
+            --border-color: #e2e8f0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 2rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .task-column {
+            text-align: left;
+            font-weight: 500;
+            background-color: #f8fafc;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .na-row td {
+            background-color: #fef2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📦 Checklist Diário de Envios</h1>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="task-column">Etapas do Processo</th>
+                    <th>Shopee</th>
+                    <th>Nuuvem</th>
+                    <th>Amazon</th>
+                    <th>Mercado Livre</th>
+                    <th>TikTok</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="task-column">1. Relatório de Separação Gerado</td>
+                    <td><input type="checkbox" id="shopee-1"></td>
+                    <td><input type="checkbox" id="nuuvem-1"></td>
+                    <td><input type="checkbox" id="amazon-1"></td>
+                    <td><input type="checkbox" id="meli-1"></td>
+                    <td><input type="checkbox" id="tiktok-1"></td>
+                </tr>
+                <tr>
+                    <td class="task-column">2. DANFE/Etiquetas Impressas</td>
+                    <td><input type="checkbox" id="shopee-2"></td>
+                    <td><input type="checkbox" id="nuuvem-2"></td>
+                    <td><input type="checkbox" id="amazon-2"></td>
+                    <td><input type="checkbox" id="meli-2"></td>
+                    <td><input type="checkbox" id="tiktok-2"></td>
+                </tr>
+                <tr>
+                    <td class="task-column">3. Produtos Embalados c/ Etiqueta</td>
+                    <td><input type="checkbox" id="shopee-3"></td>
+                    <td><input type="checkbox" id="nuuvem-3"></td>
+                    <td><input type="checkbox" id="amazon-3"></td>
+                    <td><input type="checkbox" id="meli-3"></td>
+                    <td><input type="checkbox" id="tiktok-3"></td>
+                </tr>
+                <tr>
+                    <td class="task-column">4. Entregue para Coleta/Transportadora</td>
+                    <td><input type="checkbox" id="shopee-4"></td>
+                    <td><input type="checkbox" id="nuuvem-4"></td>
+                    <td><input type="checkbox" id="amazon-4"></td>
+                    <td><input type="checkbox" id="meli-4"></td>
+                    <td><input type="checkbox" id="tiktok-4"></td>
+                </tr>
+                <tr class="na-row">
+                    <td class="task-column"><em>Sem pedidos neste canal hoje</em></td>
+                    <td><input type="checkbox" id="shopee-0"></td>
+                    <td><input type="checkbox" id="nuuvem-0"></td>
+                    <td><input type="checkbox" id="amazon-0"></td>
+                    <td><input type="checkbox" id="meli-0"></td>
+                    <td><input type="checkbox" id="tiktok-0"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="controls">
+        <button onclick="resetChecklist()">🔄 Iniciar Novo Dia (Limpar Tudo)</button>
+    </div>
+
+    <script>
+        // Função para salvar o estado dos checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        
+        checkboxes.forEach(checkbox => {
+            // Carrega o estado salvo ao abrir a página
+            const savedState = localStorage.getItem(checkbox.id);
+            if (savedState === 'true') {
+                checkbox.checked = true;
+            }
+
+            // Salva o estado sempre que houver um clique
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.checked);
+            });
+        });
+
+        // Função para limpar o checklist
+        function resetChecklist() {
+            if(confirm("Tem certeza que deseja limpar todo o checklist para começar um novo dia?")) {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    localStorage.removeItem(checkbox.id);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
