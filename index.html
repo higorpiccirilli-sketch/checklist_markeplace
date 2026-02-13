@@ -3,189 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist de Envios Diários - Marketplaces</title>
+    <title>Checklist de Envios Diários</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #2563eb;
-            --bg-color: #f8fafc;
-            --text-color: #334155;
-            --border-color: #e2e8f0;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #cbd5e1; /* slate-300 */
         }
         
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #0f172a;
-            margin-bottom: 2rem;
-        }
-
         .table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-        }
-
-        th, td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-        }
-
-        th:last-child, td:last-child {
-            border-right: none;
+            background-color: #1e293b; /* slate-800 */
+            border-color: #334155; /* slate-700 */
         }
 
         th {
-            background-color: #f1f5f9;
-            font-weight: 600;
-            color: #0f172a;
+            background-color: rgba(30, 41, 59, 0.8);
+            border-bottom: 2px solid #334155;
+            color: #f8fafc;
+        }
+
+        td {
+            border-bottom: 1px solid #334155;
+            border-right: 1px solid #334155;
+        }
+
+        td:last-child {
+            border-right: none;
         }
 
         .task-column {
-            text-align: left;
-            font-weight: 500;
-            background-color: #f8fafc;
+            background-color: #1e293b;
+            color: #f1f5f9;
         }
 
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .controls {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #1d4ed8;
+        tr:last-child td {
+            border-bottom: none;
         }
 
         .na-row td {
-            background-color: #fef2f2;
+            background-color: rgba(15, 23, 42, 0.3); /* dark row for 'no orders' */
+            border-top: 2px solid #334155;
+        }
+
+        /* Custom Checkbox Styling matching your reference */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #0284c7; /* sky-600 */
+            border-color: #0284c7;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            color: white;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+
+        input[type="checkbox"]:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        input[type="checkbox"].na-checkbox:checked {
+            background-color: #475569; /* grey for N/A */
+            border-color: #475569;
+        }
+
+        .progress-bar-fill {
+            transition: width 0.3s ease-in-out;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            transition: opacity 0.2s ease-in-out;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .modal-container {
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+            background-color: #1e293b;
         }
     </style>
 </head>
-<body>
+<body class="antialiased min-h-screen flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
 
-    <h1>📦 Checklist Diário de Envios</h1>
+    <div class="w-full max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-50">📦 Checklist Diário de Envios</h1>
+            <p class="text-slate-400 mt-2">Validação no Bling, Separação e Faturamento por Marketplace</p>
+        </header>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th class="task-column">Etapas do Processo</th>
-                    <th>Shopee</th>
-                    <th>Nuuvem</th>
-                    <th>Amazon</th>
-                    <th>Mercado Livre</th>
-                    <th>TikTok</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="task-column">1. Relatório de Separação Gerado</td>
-                    <td><input type="checkbox" id="shopee-1"></td>
-                    <td><input type="checkbox" id="nuuvem-1"></td>
-                    <td><input type="checkbox" id="amazon-1"></td>
-                    <td><input type="checkbox" id="meli-1"></td>
-                    <td><input type="checkbox" id="tiktok-1"></td>
-                </tr>
-                <tr>
-                    <td class="task-column">2. DANFE/Etiquetas Impressas</td>
-                    <td><input type="checkbox" id="shopee-2"></td>
-                    <td><input type="checkbox" id="nuuvem-2"></td>
-                    <td><input type="checkbox" id="amazon-2"></td>
-                    <td><input type="checkbox" id="meli-2"></td>
-                    <td><input type="checkbox" id="tiktok-2"></td>
-                </tr>
-                <tr>
-                    <td class="task-column">3. Produtos Embalados c/ Etiqueta</td>
-                    <td><input type="checkbox" id="shopee-3"></td>
-                    <td><input type="checkbox" id="nuuvem-3"></td>
-                    <td><input type="checkbox" id="amazon-3"></td>
-                    <td><input type="checkbox" id="meli-3"></td>
-                    <td><input type="checkbox" id="tiktok-3"></td>
-                </tr>
-                <tr>
-                    <td class="task-column">4. Entregue para Coleta/Transportadora</td>
-                    <td><input type="checkbox" id="shopee-4"></td>
-                    <td><input type="checkbox" id="nuuvem-4"></td>
-                    <td><input type="checkbox" id="amazon-4"></td>
-                    <td><input type="checkbox" id="meli-4"></td>
-                    <td><input type="checkbox" id="tiktok-4"></td>
-                </tr>
-                <tr class="na-row">
-                    <td class="task-column"><em>Sem pedidos neste canal hoje</em></td>
-                    <td><input type="checkbox" id="shopee-0"></td>
-                    <td><input type="checkbox" id="nuuvem-0"></td>
-                    <td><input type="checkbox" id="amazon-0"></td>
-                    <td><input type="checkbox" id="meli-0"></td>
-                    <td><input type="checkbox" id="tiktok-0"></td>
-                </tr>
-            </tbody>
-        </table>
+        <main class="table-container rounded-xl shadow-lg border overflow-x-auto mb-8">
+            <table class="w-full text-center border-collapse whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="p-4 text-left font-semibold text-sm uppercase tracking-wider">Etapas do Processo</th>
+                        <th class="p-4 font-semibold text-sm uppercase tracking-wider text-orange-500">Shopee</th>
+                        <th class="p-4 font-semibold text-sm uppercase tracking-wider text-purple-400">Nuuvem</th>
+                        <th class="p-4 font-semibold text-sm uppercase tracking-wider text-sky-400">Amazon</th>
+                        <th class="p-4 font-semibold text-sm uppercase tracking-wider text-yellow-400">Mercado Livre</th>
+                        <th class="p-4 font-semibold text-sm uppercase tracking-wider text-pink-500">TikTok</th>
+                    </tr>
+                </thead>
+                <tbody id="checklist-body">
+                    <tr class="hover:bg-slate-700/30 transition-colors">
+                        <td class="task-column p-4 text-left font-medium">1. Conferência de Pedidos (Bling vs. Painel)</td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="shopee" id="shopee-1"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="nuuvem" id="nuuvem-1"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="amazon" id="amazon-1"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="meli" id="meli-1"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="tiktok" id="tiktok-1"></td>
+                    </tr>
+                    <tr class="hover:bg-slate-700/30 transition-colors">
+                        <td class="task-column p-4 text-left font-medium">2. Relatório de Separação Gerado</td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="shopee" id="shopee-2"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="nuuvem" id="nuuvem-2"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="amazon" id="amazon-2"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="meli" id="meli-2"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="tiktok" id="tiktok-2"></td>
+                    </tr>
+                    <tr class="hover:bg-slate-700/30 transition-colors">
+                        <td class="task-column p-4 text-left font-medium">3. Faturamento e Impressão (DANFE/Etiquetas)</td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="shopee" id="shopee-3"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="nuuvem" id="nuuvem-3"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="amazon" id="amazon-3"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="meli" id="meli-3"></td>
+                        <td class="p-4"><input type="checkbox" class="task-cb" data-col="tiktok" id="tiktok-3"></td>
+                    </tr>
+                    <tr class="na-row">
+                        <td class="task-column p-4 text-left text-slate-400 italic text-sm">Sem pedidos neste canal hoje</td>
+                        <td class="p-4"><input type="checkbox" class="na-cb" data-col="shopee" id="shopee-0"></td>
+                        <td class="p-4"><input type="checkbox" class="na-cb" data-col="nuuvem" id="nuuvem-0"></td>
+                        <td class="p-4"><input type="checkbox" class="na-cb" data-col="amazon" id="amazon-0"></td>
+                        <td class="p-4"><input type="checkbox" class="na-cb" data-col="meli" id="meli-0"></td>
+                        <td class="p-4"><input type="checkbox" class="na-cb" data-col="tiktok" id="tiktok-0"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <footer class="p-6 rounded-xl shadow-md border table-container">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-slate-400">Progresso do Dia</span>
+                <span id="progress-text" class="text-sm font-bold text-sky-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-3 mb-6">
+                <div id="progress-bar" class="bg-sky-600 h-3 rounded-full progress-bar-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-slate-700 pt-6">
+                <p id="status-message" class="text-sm text-slate-400 italic"></p>
+                <button onclick="requestReset()" class="px-6 py-2.5 bg-slate-700 text-slate-200 font-semibold rounded-lg hover:bg-slate-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-900 w-full sm:w-auto">
+                    🔄 Iniciar Novo Dia
+                </button>
+            </div>
+        </footer>
     </div>
 
-    <div class="controls">
-        <button onclick="resetChecklist()">🔄 Iniciar Novo Dia (Limpar Tudo)</button>
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay opacity-0 pointer-events-none">
+        <div class="modal-container w-full max-w-md p-6 rounded-xl shadow-2xl border border-slate-700 transform scale-95 opacity-0">
+            <h3 class="text-xl font-bold text-white mb-2">Iniciar Novo Dia?</h3>
+            <p class="text-slate-300 mb-6">Isso irá desmarcar todas as opções do checklist. Tem certeza de que todos os processos de hoje foram finalizados?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="hideModal()" class="px-4 py-2 bg-slate-700 text-slate-200 font-semibold rounded-lg hover:bg-slate-600 transition">Cancelar</button>
+                <button onclick="confirmReset()" class="px-4 py-2 bg-sky-600 text-white font-semibold rounded-lg hover:bg-sky-500 transition">Sim, limpar tudo</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Função para salvar o estado dos checkboxes
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const LS_PREFIX = 'mkp_checklist_v1_';
+        const marketplaces = ['shopee', 'nuuvem', 'amazon', 'meli', 'tiktok'];
+        const numTasks = 3; // Number of main tasks per marketplace
         
-        checkboxes.forEach(checkbox => {
-            // Carrega o estado salvo ao abrir a página
-            const savedState = localStorage.getItem(checkbox.id);
-            if (savedState === 'true') {
-                checkbox.checked = true;
-            }
+        const taskCheckboxes = document.querySelectorAll('.task-cb');
+        const naCheckboxes = document.querySelectorAll('.na-cb');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const statusMessage = document.getElementById('status-message');
+        const modal = document.getElementById('custom-modal');
 
-            // Salva o estado sempre que houver um clique
-            checkbox.addEventListener('change', function() {
-                localStorage.setItem(this.id, this.checked);
-            });
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            attachEventListeners();
+            calculateProgress();
         });
 
-        // Função para limpar o checklist
-        function resetChecklist() {
-            if(confirm("Tem certeza que deseja limpar todo o checklist para começar um novo dia?")) {
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                    localStorage.removeItem(checkbox.id);
+        function attachEventListeners() {
+            // Standard tasks
+            taskCheckboxes.forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    saveState(e.target.id, e.target.checked);
+                    calculateProgress();
                 });
+            });
+
+            // "No orders" (N/A) exception checkboxes
+            naCheckboxes.forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const col = e.target.dataset.col;
+                    handleNAChange(col, e.target.checked);
+                    saveState(e.target.id, e.target.checked);
+                    calculateProgress();
+                });
+            });
+        }
+
+        // Handle logic when "Sem pedidos" is checked/unchecked
+        function handleNAChange(col, isChecked) {
+            for (let i = 1; i <= numTasks; i++) {
+                const taskCb = document.getElementById(`${col}-${i}`);
+                if (isChecked) {
+                    taskCb.checked = false; // Uncheck main tasks
+                    taskCb.disabled = true; // Disable them
+                    saveState(taskCb.id, false);
+                } else {
+                    taskCb.disabled = false; // Re-enable them if N/A is unchecked
+                }
             }
+        }
+
+        function calculateProgress() {
+            const totalRequiredActions = marketplaces.length * numTasks; // 15 total tasks
+            let completedActions = 0;
+
+            marketplaces.forEach(col => {
+                const naCb = document.getElementById(`${col}-0`);
+                if (naCb.checked) {
+                    // If "No orders", we consider all tasks for this column as completed
+                    completedActions += numTasks;
+                } else {
+                    // Otherwise, count individual checked tasks
+                    for (let i = 1; i <= numTasks; i++) {
+                        if (document.getElementById(`${col}-${i}`).checked) {
+                            completedActions++;
+                        }
+                    }
+                }
+            });
+
+            const percentage = Math.round((completedActions / totalRequiredActions) * 100);
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${percentage}%`;
+
+            if (percentage === 100) {
+                statusMessage.textContent = "🎉 Todos os processos de envio foram concluídos!";
+                statusMessage.classList.remove('text-slate-400');
+                statusMessage.classList.add('text-emerald-400', 'font-medium');
+            } else {
+                statusMessage.textContent = "Continue preenchendo as etapas concluídas...";
+                statusMessage.classList.add('text-slate-400');
+                statusMessage.classList.remove('text-emerald-400', 'font-medium');
+            }
+        }
+
+        // LocalStorage Management
+        function saveState(id, state) {
+            localStorage.setItem(LS_PREFIX + id, state);
+        }
+
+        function loadState() {
+            // Load N/A first to apply disabled states
+            naCheckboxes.forEach(cb => {
+                const state = localStorage.getItem(LS_PREFIX + cb.id) === 'true';
+                cb.checked = state;
+                if (state) handleNAChange(cb.dataset.col, true);
+            });
+
+            // Load main tasks
+            taskCheckboxes.forEach(cb => {
+                // Only load state if it hasn't been disabled by N/A logic
+                if (!cb.disabled) {
+                    cb.checked = localStorage.getItem(LS_PREFIX + cb.id) === 'true';
+                }
+            });
+        }
+
+        // Reset & Modal Logic
+        function requestReset() {
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            modal.querySelector('.modal-container').classList.remove('scale-95', 'opacity-0');
+        }
+
+        function hideModal() {
+            modal.classList.add('pointer-events-none', 'opacity-0');
+            modal.querySelector('.modal-container').classList.add('scale-95', 'opacity-0');
+        }
+
+        function confirmReset() {
+            // Uncheck and enable all
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+                cb.disabled = false;
+                localStorage.removeItem(LS_PREFIX + cb.id);
+            });
+            calculateProgress();
+            hideModal();
         }
     </script>
 </body>
